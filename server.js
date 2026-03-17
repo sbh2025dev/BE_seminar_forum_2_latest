@@ -29,14 +29,14 @@ app.get("/", (request, response) => {
 });
 
 app.get("/shop", (request, response) => {
-  db.collection("post").insertOne(
-    { name: "홍길동", age: 20, _id: 100 },
-    (err, result) => {
-      if (err) {
-        console.log(err);
-      }
-    },
-  );
+  // db.collection("post").insertOne(
+  //   { name: "홍길동", age: 20, _id: 100 },
+  //   (err, result) => {
+  //     if (err) {
+  //       console.log(err);
+  //     }
+  //   },
+  // );
   response.sendFile(__dirname + "/shop.html");
 });
 
@@ -51,6 +51,6 @@ app.get("/list", async (request, response) => {
       }
     });
   // db_result는 array 형태로 DB에서 가져온 데이터를 담고 있다.
-  console.log(db_result[0].title);
+  // console.log(db_result[0].title);
   response.render("list", { posts: db_result });
 });
