@@ -44,18 +44,15 @@
       <a href="/shop">Shop</a>
       <a href="/list">List</a>
     </nav>
-    <h1>Posts</h1>
-    <div class="post">
-      <h2><%= posts[0].title %></h2>
-      <p><%= posts[0].content %></p>
-    </div>
-    <div class="post">
-      <h2><%= posts[1].title %></h2>
-      <p><%= posts[1].content %></p>
-    </div>
-    <div class="post">
-      <h2><%= posts[2].title %></h2>
-      <p><%= posts[2].content %></p>
-    </div>
+
+    <h1>Posts (<%= posts.length %>)</h1>
+
+    <% for (let i = 0; i < posts.length; i++) { %>
+      <div class="post">
+        <h2><%= posts[i].title %></h2>
+        <p><%= posts[i].content %></p>
+      </div>
+    <% } %>
+
   </body>
 </html>

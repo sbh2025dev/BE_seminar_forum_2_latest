@@ -38,6 +38,10 @@ app.get("/shop", (request, response) => {
   //   },
   // );
   response.sendFile(__dirname + "/shop.html");
+
+  for (let i = 0; i < 3; i++) {
+    console.log(i);
+  }
 });
 
 app.get("/list", async (request, response) => {
