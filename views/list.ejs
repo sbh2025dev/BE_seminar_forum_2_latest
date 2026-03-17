@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Post List</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      nav {
+        margin-bottom: 20px;
+      }
+      nav a {
+        margin-right: 15px;
+        text-decoration: none;
+        color: #333;
+      }
+      nav a:hover {
+        text-decoration: underline;
+      }
+      .post {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 15px;
+        margin-bottom: 10px;
+      }
+      .post h2 {
+        margin: 0 0 8px 0;
+        font-size: 1.1rem;
+      }
+      .post p {
+        margin: 0;
+        color: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/shop">Shop</a>
+      <a href="/list">List</a>
+    </nav>
+    <h1>Posts</h1>
+    <div class="post">
+      <h2><%= posts[0].title %></h2>
+      <p><%= posts[0].content %></p>
+    </div>
+    <div class="post">
+      <h2><%= posts[1].title %></h2>
+      <p><%= posts[1].content %></p>
+    </div>
+    <div class="post">
+      <h2><%= posts[2].title %></h2>
+      <p><%= posts[2].content %></p>
+    </div>
+  </body>
+</html>

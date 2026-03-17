@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200">
+  <rect width="300" height="200" fill="#fff3e0"/>
+  <polygon points="150,30 195,100 240,100 205,140 220,170 150,145 80,170 95,140 60,100 105,100" fill="#f57c00"/>
+  <polygon points="150,55 183,105 213,105 190,132 200,155 150,135 100,155 110,132 87,105 117,105" fill="#ffcc02"/>
+  <text x="150" y="185" text-anchor="middle" font-family="Arial" font-size="13" fill="#e65100">Product 3</text>
+</svg>
