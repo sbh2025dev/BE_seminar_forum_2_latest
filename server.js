@@ -1,8 +1,9 @@
 const express = require("express");
 const app = express();
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
 
 app.use(express.static("public"));
+app.use(express.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 
 // 서버와 DB가 통신하는 방법
@@ -41,6 +42,74 @@ app.get("/shop", (request, response) => {
 
   for (let i = 0; i < 3; i++) {
     console.log(i);
+  }
+});
+
+app.get("/write", (request, response) => {
+  response.render("write");
+});
+
+app.post("/write", async (request, response) => {
+  await db.collection("post").insertOne({
+    title: request.body.title,
+    content: request.body.content,
+  });
+  response.redirect("/list");
+});
+
+app.get("/detail/:id", async (request, response) => {
+  try {
+    const post = await db
+      .collection("post")
+      .findOne({ _id: new ObjectId(request.params.id) });
+
+    if (!post) return response.status(404).send("Post not found.");
+
+    response.render("detail", { post });
+  } catch (err) {
+    console.log(err);
+
+    response.status(500).send("Failed to load post.");
+  }
+});
+
+app.get("/edit/:id", async (request, response) => {
+  try {
+    const post = await db
+      .collection("post")
+      .findOne({ _id: new ObjectId(request.params.id) });
+    if (!post) return response.status(404).send("Post not found.");
+    response.render("edit", { post });
+  } catch (err) {
+    console.log(err);
+    response.status(500).send("Failed to load post.");
+  }
+});
+
+app.post("/edit/:id", async (request, response) => {
+  try {
+    await db
+      .collection("post")
+      .updateOne(
+        { _id: new ObjectId(request.params.id) },
+        { $set: { title: request.body.title, content: request.body.content } },
+      );
+    response.redirect("/list");
+  } catch (err) {
+    console.log(err);
+    response.status(500).send("Failed to update post.");
+  }
+});
+
+app.delete("/post/:id", async (request, response) => {
+  try {
+    await db
+      .collection("post")
+      .deleteOne({ _id: new ObjectId(request.params.id) });
+    response.json({ ok: true });
+  } catch (err) {
+    console.log(err);
+    response.status(500).json({ ok: false });
   }
 });
 

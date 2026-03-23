@@ -36,23 +36,112 @@
         margin: 0;
         color: #555;
       }
+      .post:hover {
+        background-color: #f5f5f5;
+        border-color: #bbb;
+      }
+      .post-wrapper {
+        display: flex;
+        align-items: stretch;
+        margin-bottom: 10px;
+      }
+      .post-wrapper > a:first-child {
+        flex: 1;
+      }
+      .post-wrapper > a:first-child .post {
+        margin-bottom: 0;
+      }.post-wrapper > a:has(.edit-btn) {
+        display: flex;
+        margin-left: 5px;
+        text-decoration: none;
+      }
+      .edit-btn {
+        flex: 1;
+        padding: 15px 20px;
+        font-size: 1rem;
+        font-family: Arial, sans-serif;
+        cursor: pointer;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: #fff;
+        color: #333;
+        white-space: nowrap;
+      }
+      .edit-btn:hover {
+        background-color: #f5f5f5;
+        border-color: #bbb;
+      }
+      .delete-btn {
+        margin-left: 5px;
+        padding: 15px 20px;
+        font-size: 1rem;
+        font-family: Arial, sans-serif;
+        cursor: pointer;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: #fff;
+        color: #c00;
+        white-space: nowrap;
+      }
+      .delete-btn:hover {
+        background-color: #fff0f0;
+        border-color: #c00;
+      }
+
     </style>
   </head>
   <body>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/shop">Shop</a>
-      <a href="/list">List</a>
-    </nav>
-
+    <%- include('nav') %>
+    
     <h1>Posts (<%= posts.length %>)</h1>
 
     <% for (let i = 0; i < posts.length; i++) { %>
-      <div class="post">
-        <h2><%= posts[i].title %></h2>
-        <p><%= posts[i].content %></p>
-      </div>
+
+    <div class="post-wrapper">
+      <a href="/detail/<%= posts[i]._id %>" style="text-decoration:none; color:inherit;">
+        <div class="post">
+          <h2><%= posts[i].title %></h2>
+          <p><%= posts[i].content %></p>
+        </div>
+      </a>
+      <a href="/edit/<%= posts[i]._id %>">
+        <button class="edit-btn">Edit</button>
+      </a>
+      <button class="delete-btn" data-id="<%= posts[i]._id %>">Delete</button>
+    </div>
+
     <% } %>
+
+
+    <script>
+      // 해당 페이지에 있는 모든 삭제 버튼을 찾는다.
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+
+        // 각각의 삭제 버튼이 클릭 이벤트를 기다리도록 한다.
+        btn.addEventListener('click', async () => {
+
+          console.log('Delete button clicked!');
+
+          // 버튼의 data-id 속성에 담긴 값을 가져온다.
+          const id = btn.dataset.id;
+
+          // AJAX 요청을 보내서 서버에 해당 ID의 글을 삭제해달라고 요청한다.
+          const res = await fetch(`/post/${id}`, { method: 'DELETE' });
+
+          // 서버가 삭제 완료 응답을 보내면, 해당 글을 화면에서 제거한다.
+          if (res.ok) {
+            
+            // 삭제 버튼에서 가장 가까운 .post-wrapper 요소를 찾아서 제거한다.
+            const wrapper = btn.closest('.post-wrapper');
+            wrapper.remove();
+            const h1 = document.querySelector('h1');
+            const remaining = document.querySelectorAll('.post-wrapper').length;
+            h1.textContent = `Posts (${remaining})`;
+          }
+        });
+      });
+    </script>
+
 
   </body>
 </html>
