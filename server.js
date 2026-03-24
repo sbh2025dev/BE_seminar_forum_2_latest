@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const { MongoClient, ObjectId } = require("mongodb");
+const bcrypt = require("bcrypt");
 
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
@@ -27,6 +28,65 @@ new MongoClient(url)
 // 누군가가 메인페이지를 요청했을 때 "hello world" 라는 문자열로 응답해준다.
 app.get("/", (request, response) => {
   response.sendFile(__dirname + "/index.html");
+});
+
+app.get("/login", (request, response) => {
+  response.render("login", { error: null });
+});
+
+app.post("/login", async (request, response) => {
+  try {
+    const user = await db
+      .collection("user")
+      .findOne({ username: request.body.username });
+    if (!user) {
+      return response.render("login", {
+        error: "사용자 이름이 존재하지 않습니다.",
+      });
+    }
+
+    const isPasswordValid = await bcrypt.compare(
+      request.body.password,
+      user.password,
+    );
+    if (!isPasswordValid) {
+      return response.render("login", {
+        error: "비밀번호가 올바르지 않습니다.",
+      });
+    }
+
+    request.session.userId = user._id; // 로그인 성공 시 세션에 사용자 ID 저장
+    response.redirect("/list");
+  } catch (err) {
+    console.log(err);
+    response.render("login", { error: "로그인 실패." });
+  }
+});
+
+app.get("/register", (request, response) => {
+  response.render("register", { error: null });
+});
+
+app.post("/register", async (request, response) => {
+  try {
+    const existingUser = await db
+      .collection("user")
+      .findOne({ username: request.body.username });
+
+    if (existingUser) {
+      return response.render("register", { error: "사용 중인 아이디입니다." });
+    }
+
+    const hash = await bcrypt.hash(request.body.password, 10);
+    await db.collection("user").insertOne({
+      username: request.body.username,
+      password: hash,
+    });
+    response.redirect("/list");
+  } catch (err) {
+    console.log(err);
+    response.render("register", { error: "Registration failed." });
+  }
 });
 
 app.get("/shop", (request, response) => {
