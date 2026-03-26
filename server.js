@@ -25,22 +25,22 @@ app.use(
 
 // 모든 페이지에서 로그인한 사용자 정보를 사용할 수 있도록 설정한다.
 // 요청 들어온 후 실행되어 ejs 템플릿이 렌더링되기 전에 실행된다.
-app.use(async (req, res, next) => {
-  if (req.session.userId) {
+app.use(async (request, response, next) => {
+  if (request.session.userId) {
     try {
-      // req.user: 로그인한 사용자 정보를 담는 객체
-      // req.session.userId: 쿠키에 저장된 사용자 ID. 이 ID를 사용하여 DB에서 사용자 정보를 가져온다.
-      req.user = await db
+      // request.user: 로그인한 사용자 정보를 담는 객체
+      // request.session.userId: 쿠키에 저장된 사용자 ID. 이 ID를 사용하여 DB에서 사용자 정보를 가져온다.
+      request.user = await db
         .collection("user")
-        .findOne({ _id: new ObjectId(req.session.userId) });
+        .findOne({ _id: new ObjectId(request.session.userId) });
     } catch {
-      req.user = null;
+      request.user = null;
     }
   } else {
-    req.user = null;
+    request.user = null;
   }
-  // res.locals: ejs 에서 사용할 수 있는 변수들을 담아놓는 객체
-  res.locals.user = req.user;
+  // response.locals: ejs 에서 사용할 수 있는 변수들을 담아놓는 객체
+  response.locals.user = request.user;
   next();
 });
 
@@ -64,10 +64,10 @@ new MongoClient(url)
 
 // 로그인 여부를 확인하는 미들웨어 함수, next: 다음 함수로 넘어가는 함수
 // 로그인되어 있으면 다음 함수로 넘어가고, 로그인되어 있지 않으면 로그인 페이지로 리다이렉트한다.
-function isLoggedIn(req, res, next) {
-  // req.user: 로그인한 사용자 정보가 담긴 객체, 로그인되어 있지 않으면 null
-  if (req.user) return next();
-  res.redirect("/login");
+function isLoggedIn(request, response, next) {
+  // request.user: 로그인한 사용자 정보가 담긴 객체, 로그인되어 있지 않으면 null
+  if (request.user) return next();
+  response.redirect("/login");
 }
 
 // 누군가가 메인페이지를 요청했을 때 "hello world" 라는 문자열로 응답해준다.
@@ -134,10 +134,10 @@ app.post("/register", async (request, response) => {
   }
 });
 
-app.post("/logout", (req, res, next) => {
-  req.session.destroy((err) => {
+app.post("/logout", (request, response, next) => {
+  request.session.destroy((err) => {
     if (err) return next(err);
-    res.redirect("/login");
+    response.redirect("/login");
   });
 });
 
