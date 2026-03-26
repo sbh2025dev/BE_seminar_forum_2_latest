@@ -3,6 +3,16 @@
   <a href="/shop">Shop</a>
   <a href="/list">List</a>
   <a href="/write">Write</a>
-  <a href="/login">Login</a>
-  <a href="/register">Register</a>
+  <% if (locals.user) { %>
+    <span style="margin-left:10px; color:#555;">(<%= locals.user.username %>)</span>
+    <form action="/logout" method="POST" style="display:inline; margin-left:10px;">
+      <button type="submit" 
+      style="background:none; border:none; cursor:pointer; color:#333; font-size:1rem; text-decoration:underline;">
+      Logout
+      </button>
+    </form>
+  <% } else { %>
+    <a href="/login">Login</a>
+    <a href="/register">Register</a>
+  <% } %>
 </nav>
