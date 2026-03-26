@@ -165,6 +165,7 @@ app.post("/write", isLoggedIn, async (request, response) => {
   await db.collection("post").insertOne({
     title: request.body.title,
     content: request.body.content,
+    author: request.user.username,
   });
   response.redirect("/list");
 });
